@@ -1,0 +1,19 @@
+{
+  "name": "expense-tracker",
+  "version": "1.0.0",
+  "description": "Full-stack personal finance tracker with React and Node.js",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w server\" \"npm run dev -w client\"",
+    "install-all": "npm install && npm install -w server && npm install -w client",
+    "build": "npm run build -w client",
+    "start": "npm start -w server"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
