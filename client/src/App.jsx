@@ -1,48 +1,22 @@
 // =====================================================
-// src/App.jsx
+// src/App.jsx  —  Router & route definitions
 // =====================================================
 
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage    from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
-
-// Protected route — redirect to login if no token
-function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
-}
-
-// Redirect to dashboard if already logged in
-function PublicRoute({ children }) {
-  const token = localStorage.getItem('token');
-  return token ? <Navigate to="/dashboard" /> : children;
-}
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        {/* Auth pages */}
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
+        {/* Public routes — anyone can visit */}
+        <Route path="/login"    element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-        {/* Dashboard */}
+        {/* Protected routes — must be logged in */}
         <Route
           path="/dashboard"
           element={
@@ -52,10 +26,13 @@ function App() {
           }
         />
 
-        {/* Default route */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        {/* Redirect root to dashboard (or login if not logged in) */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Catch-all 404 */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

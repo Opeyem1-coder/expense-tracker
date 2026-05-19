@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Wallet, User, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
 import api from '../api/axios';
 
 function RegisterPage() {
