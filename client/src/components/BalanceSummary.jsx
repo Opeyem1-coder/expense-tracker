@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 
 const fmt = (amount) =>
@@ -14,6 +15,19 @@ function SkeletonCard({ className }) {
 }
 
 function BalanceSummary({ summary, loading }) {
+  const [hiddenCards, setHiddenCards] = useState(() => {
+    const stored = localStorage.getItem('hiddenBalanceCards');
+    return stored ? JSON.parse(stored) : { balance: false, income: false, expenses: false };
+  });
+
+  const toggleCard = (cardKey) => {
+    setHiddenCards((prev) => {
+      const next = { ...prev, [cardKey]: !prev[cardKey] };
+      localStorage.setItem('hiddenBalanceCards', JSON.stringify(next));
+      return next;
+    });
+  };
+
   if (loading) {
     return (
       <div className="summary-grid" aria-label="Loading balance data">
@@ -35,9 +49,23 @@ function BalanceSummary({ summary, loading }) {
         <div className="summary-icon" aria-hidden="true">
           <Wallet size={20} strokeWidth={2.5} />
         </div>
+
         <div className="summary-label">Total Balance</div>
-        <div className="summary-amount" aria-label={`Balance: ${fmt(balance)}`}>
-          {fmt(balance)}
+        <div
+          className="summary-amount"
+          style={{ cursor: 'pointer' }}
+          onClick={() => toggleCard('balance')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleCard('balance');
+            }
+          }}
+          aria-label={hiddenCards.balance ? 'Balance hidden. Click to show.' : `Balance: ${fmt(balance)}. Click to hide.`}
+        >
+          {hiddenCards.balance ? '••••••' : fmt(balance)}
         </div>
         <div className="summary-sub">Your current net balance</div>
       </div>
@@ -48,8 +76,21 @@ function BalanceSummary({ summary, loading }) {
           <TrendingUp size={20} strokeWidth={2.5} />
         </div>
         <div className="summary-label">Income</div>
-        <div className="summary-amount" aria-label={`Total income: ${fmt(income)}`}>
-          {fmt(income)}
+        <div
+          className="summary-amount"
+          style={{ cursor: 'pointer' }}
+          onClick={() => toggleCard('income')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleCard('income');
+            }
+          }}
+          aria-label={hiddenCards.income ? 'Income hidden. Click to show.' : `Total income: ${fmt(income)}. Click to hide.`}
+        >
+          {hiddenCards.income ? '••••••' : fmt(income)}
         </div>
         <div className="summary-sub">Total earned</div>
       </div>
@@ -60,8 +101,21 @@ function BalanceSummary({ summary, loading }) {
           <TrendingDown size={20} strokeWidth={2.5} />
         </div>
         <div className="summary-label">Expenses</div>
-        <div className="summary-amount" aria-label={`Total expenses: ${fmt(expenses)}`}>
-          {fmt(expenses)}
+        <div
+          className="summary-amount"
+          style={{ cursor: 'pointer' }}
+          onClick={() => toggleCard('expenses')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleCard('expenses');
+            }
+          }}
+          aria-label={hiddenCards.expenses ? 'Expenses hidden. Click to show.' : `Total expenses: ${fmt(expenses)}. Click to hide.`}
+        >
+          {hiddenCards.expenses ? '••••••' : fmt(expenses)}
         </div>
         <div className="summary-sub">Total spent</div>
       </div>

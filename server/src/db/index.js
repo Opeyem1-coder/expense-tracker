@@ -32,6 +32,23 @@ pool.connect((err, client, release) => {
 
 // Export a simple query function so routes can use it:
 // db.query('SELECT * FROM users WHERE id = $1', [userId])
+const query = (text, params) => pool.query(text, params);
+
+const verifyDatabaseConnection = async () => {
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
+    console.log('✅ Database verified');
+  } catch (err) {
+    console.error('❌ Unable to connect to database:', err.message || err);
+    // Exit so the process manager (or developer) notices the problem
+    process.exit(1);
+  }
+};
+
+export { verifyDatabaseConnection };
+
 export default {
-  query: (text, params) => pool.query(text, params),
+  query,
 };

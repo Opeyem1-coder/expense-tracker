@@ -92,6 +92,12 @@ function DashboardPage() {
               </h1>
               <p className="dashboard-subtitle">Here's your financial snapshot</p>
             </div>
+          </div>
+
+          {/* Balance summary cards */}
+          <BalanceSummary summary={summary} loading={loading} />
+
+          <div className="dashboard-action-row" style={{ marginTop: 24, marginBottom: 24 }}>
             <button
               className="btn btn-primary btn-lg btn-icon"
               onClick={() => setShowForm(true)}
@@ -101,9 +107,6 @@ function DashboardPage() {
               Add
             </button>
           </div>
-
-          {/* Balance summary cards */}
-          <BalanceSummary summary={summary} loading={loading} />
 
           {/* Error alert */}
           {error && (
